@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
+	import { Button } from '$lib/components/ui/button/index.js';
 </script>
 
 <svelte:head>
@@ -15,8 +15,9 @@
 			The quietest classroom you'll ever see.
 		</p>
 
-		<a
-			href={resolve('/dashboard')}
+		<Button
+			href="/dashboard"
+			size="lg"
 			class="mt-10 inline-flex items-center gap-2 rounded-xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:translate-y-0"
 		>
 			Get started
@@ -34,6 +35,6 @@
 				<path d="M5 12h14" />
 				<path d="m12 5 7 7-7 7" />
 			</svg>
-		</a>
+		</Button>
 	</div>
 </main>
