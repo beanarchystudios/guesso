@@ -11,14 +11,14 @@
 	<div class="flex max-w-2xl flex-col items-center text-center">
 		<h1 class="text-5xl font-bold tracking-tight text-chart-1 sm:text-6xl md:text-7xl">Guesso</h1>
 
-		<p class="mt-6 text-lg text-muted-foreground sm:text-xl">
+		<p class="mt-4 text-lg text-muted-foreground sm:text-xl">
 			The quietest classroom you'll ever see.
 		</p>
 
 		<Button
 			href="/dashboard"
 			size="lg"
-			class="mt-10 inline-flex items-center gap-2 rounded-xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:translate-y-0"
+			class="mt-6 rounded-xl bg-primary text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:translate-y-0"
 		>
 			Get started
 			<svg
