@@ -23,7 +23,7 @@
 						{#snippet child({ props })}
 							<a href={resolve('/')} {...props}>
 								<HugeiconsIcon icon={PaintBoardIcon} strokeWidth={2} />
-								<span class="truncate font-semibold">Guesso</span>
+								<span class="truncate">Guesso</span>
 							</a>
 						{/snippet}
 					</Sidebar.MenuButton>
