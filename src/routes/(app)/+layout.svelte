@@ -85,9 +85,6 @@
 	</Sidebar.Root>
 
 	<Sidebar.Inset>
-		<header class="flex h-14 shrink-0 items-center gap-2 border-b px-4">
-			<Sidebar.Trigger />
-		</header>
 		{@render children()}
 	</Sidebar.Inset>
 </Sidebar.Provider>
