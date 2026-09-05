@@ -6,7 +6,8 @@
 		BookOpen01Icon,
 		Calendar03Icon,
 		Home01Icon,
-		Mail01Icon
+		Mail01Icon,
+		PaintBoardIcon
 	} from '@hugeicons/core-free-icons';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 
@@ -18,15 +19,11 @@
 		<Sidebar.Header>
 			<Sidebar.Menu>
 				<Sidebar.MenuItem>
-					<Sidebar.MenuButton size="lg">
+					<Sidebar.MenuButton class="text-chart-1!">
 						{#snippet child({ props })}
 							<a href={resolve('/dashboard')} {...props}>
-								<span
-									class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary text-sm font-semibold text-primary-foreground"
-								>
-									G
-								</span>
-								<span class="truncate text-base font-semibold">Guesso</span>
+								<HugeiconsIcon icon={PaintBoardIcon} strokeWidth={2} />
+								<span class="truncate font-semibold">Guesso</span>
 							</a>
 						{/snippet}
 					</Sidebar.MenuButton>
@@ -36,7 +33,6 @@
 
 		<Sidebar.Content>
 			<Sidebar.Group>
-				<Sidebar.GroupLabel>Workspace</Sidebar.GroupLabel>
 				<Sidebar.GroupContent>
 					<Sidebar.Menu>
 						<Sidebar.MenuItem>
