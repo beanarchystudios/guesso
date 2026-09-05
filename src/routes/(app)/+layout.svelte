@@ -21,7 +21,7 @@
 				<Sidebar.MenuItem>
 					<Sidebar.MenuButton class="text-chart-1!">
 						{#snippet child({ props })}
-							<a href={resolve('/dashboard')} {...props}>
+							<a href={resolve('/')} {...props}>
 								<HugeiconsIcon icon={PaintBoardIcon} strokeWidth={2} />
 								<span class="truncate font-semibold">Guesso</span>
 							</a>
