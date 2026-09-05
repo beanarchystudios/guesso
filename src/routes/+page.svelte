@@ -9,7 +9,7 @@
 
 <main class="flex min-h-svh flex-col items-center justify-center px-6">
 	<div class="flex max-w-2xl flex-col items-center text-center">
-		<h1 class="text-6xl font-bold tracking-tight text-chart-1 sm:text-7xl md:text-8xl">Guesso</h1>
+		<h1 class="text-5xl font-bold tracking-tight text-chart-1 sm:text-6xl md:text-7xl">Guesso</h1>
 
 		<p class="mt-6 text-lg text-muted-foreground sm:text-xl">
 			The quietest classroom you'll ever see.
