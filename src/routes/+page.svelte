@@ -1,3 +1,7 @@
+<script lang="ts">
+	import { resolve } from '$app/paths';
+</script>
+
 <svelte:head>
 	<title>Guesso</title>
 	<meta name="description" content="Guesso — The quietest classroom you'll ever see." />
@@ -5,16 +9,14 @@
 
 <main class="flex min-h-svh flex-col items-center justify-center px-6">
 	<div class="flex max-w-2xl flex-col items-center text-center">
-		<h1 class="text-6xl font-bold tracking-tight text-chart-1 sm:text-7xl md:text-8xl">
-			Guesso
-		</h1>
+		<h1 class="text-6xl font-bold tracking-tight text-chart-1 sm:text-7xl md:text-8xl">Guesso</h1>
 
 		<p class="mt-6 text-lg text-muted-foreground sm:text-xl">
 			The quietest classroom you'll ever see.
 		</p>
 
 		<a
-			href="/dashboard"
+			href={resolve('/dashboard')}
 			class="mt-10 inline-flex items-center gap-2 rounded-xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:translate-y-0"
 		>
 			Get started
