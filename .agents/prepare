@@ -1,0 +1,5 @@
+#!/bin/sh
+set -eu
+
+bun install
+cp "$HOME/Work/sv/guesso/.env" .env
