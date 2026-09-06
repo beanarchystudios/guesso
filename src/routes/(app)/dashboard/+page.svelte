@@ -14,7 +14,7 @@
 	<title>Dashboard | Guesso</title>
 </svelte:head>
 
-<div class="min-h-full">
+<div class="min-h-full overflow-y-auto">
 	<div class="w-full">
 		{#if favoriteCourses.loading && !favoriteCourses.ready}
 			<p class="p-4 text-sm text-muted-foreground" role="status">Loading favorite courses...</p>

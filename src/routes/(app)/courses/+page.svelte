@@ -38,7 +38,7 @@
 	<title>Courses | Guesso</title>
 </svelte:head>
 
-<main class="p-6">
+<main class="overflow-y-auto p-6">
 	{#if (coursesQuery.loading && !coursesQuery.ready) || (favoritesQuery.loading && !favoritesQuery.ready) || (customColorsQuery.loading && !customColorsQuery.ready)}
 		<p class="mt-6 text-sm text-muted-foreground" role="status">Loading courses...</p>
 	{:else if coursesQuery.error || favoritesQuery.error}
