@@ -54,6 +54,7 @@
 								{#if favoriteIds.has(String(course.id))}
 									<HugeiconsIcon
 										icon={StarIcon}
+										class="fill-(--course)"
 										size={20}
 										strokeWidth={2}
 										color="var(--course)"
