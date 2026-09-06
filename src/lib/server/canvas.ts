@@ -113,6 +113,18 @@ export async function canvasPage<T>(path: string, query?: CanvasQuery): Promise<
 	return { items: data, next: nextLink(response.headers.get('link')) };
 }
 
+export async function canvasAllPages<T>(path: string, query?: CanvasQuery): Promise<T[]> {
+	let page = await canvasPage<T>(path, query);
+	const items = [...page.items];
+
+	while (page.next) {
+		page = await canvasNextPage<T>(page.next);
+		items.push(...page.items);
+	}
+
+	return items;
+}
+
 export async function canvasNextPage<T>(url: string): Promise<CanvasPage<T>> {
 	const { instanceUrl } = configuration();
 	const target = new URL(url);

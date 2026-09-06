@@ -1,6 +1,7 @@
 import { command, query } from '$app/server';
 import {
 	bounded,
+	canvasAllPages,
 	canvasGet,
 	canvasMutation,
 	canvasPage,
@@ -15,12 +16,25 @@ type CourseListInput = {
 	perPage?: number;
 };
 
+export type FavoriteCourse = {
+	id: string | number;
+	name: string;
+	image_download_url?: string;
+};
+
 export const listCourses = query('unchecked', async (input: CourseListInput = {}) =>
 	canvasPage<CanvasRecord>('courses', {
 		enrollment_state: input.enrollmentState,
 		state: input.state,
 		'include[]': input.include,
 		per_page: bounded(input.perPage)
+	})
+);
+
+export const listFavoriteCourses = query(async () =>
+	canvasAllPages<FavoriteCourse>('users/self/favorites/courses', {
+		'include[]': ['course_image'],
+		per_page: 100
 	})
 );
 

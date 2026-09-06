@@ -21,9 +21,10 @@ export const updateDashboardPositions = command(
 		})
 );
 
-export const getCustomColors = query(async () =>
-	canvasGet<Record<string, string>>('users/self/colors')
-);
+export const getCustomColors = query(async () => {
+	const response = await canvasGet<{ custom_colors?: Record<string, string> }>('users/self/colors');
+	return response.custom_colors ?? {};
+});
 
 export const updateCustomColor = command(
 	'unchecked',
