@@ -18,11 +18,19 @@
 		new Set((favoritesQuery.current ?? []).map((course) => String(course.id)))
 	);
 	const colors = $derived(customColorsQuery.current ?? {});
+	const sortedCourses = $derived(
+		[...courses].sort((first, second) => courseOrder(first) - courseOrder(second))
+	);
 
 	function isEnrolled(course: Course) {
 		return course.enrollments?.some(
 			({ enrollment_state }) => enrollment_state === 'active' || enrollment_state === 'completed'
 		);
+	}
+
+	function courseOrder(course: Course) {
+		if (favoriteIds.has(String(course.id))) return 0;
+		return isEnrolled(course) ? 1 : 2;
 	}
 </script>
 
@@ -48,7 +56,7 @@
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
-					{#each courses as course (course.id)}
+					{#each sortedCourses as course (course.id)}
 						<Table.Row style={`--course: ${colors[`course_${course.id}`] ?? 'var(--primary)'}`}>
 							<Table.Cell>
 								{#if favoriteIds.has(String(course.id))}
