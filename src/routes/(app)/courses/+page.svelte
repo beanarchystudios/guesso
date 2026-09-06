@@ -26,8 +26,6 @@
 </svelte:head>
 
 <main class="p-6">
-	<h1 class="text-3xl font-semibold tracking-tight">Courses</h1>
-
 	{#if (coursesQuery.loading && !coursesQuery.ready) || (favoritesQuery.loading && !favoritesQuery.ready)}
 		<p class="mt-6 text-sm text-muted-foreground" role="status">Loading courses...</p>
 	{:else if coursesQuery.error || favoritesQuery.error}
