@@ -23,7 +23,9 @@
 		{:else if courses.length === 0}
 			<p class="text-sm text-muted-foreground">No favorite courses yet.</p>
 		{:else}
-			<div class="grid auto-rows-min gap-4 p-4 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6">
+			<div
+				class="grid auto-rows-min gap-4 p-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6"
+			>
 				{#each courses as course (course.id)}
 					<a
 						href={resolve(`/courses/${course.id}`)}
