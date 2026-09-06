@@ -84,7 +84,7 @@
 		</Sidebar.Content>
 	</Sidebar.Root>
 
-	<Sidebar.Inset>
+	<Sidebar.Inset class="max-h-[calc(100vh-1rem)] overflow-hidden">
 		{@render children()}
 	</Sidebar.Inset>
 </Sidebar.Provider>
