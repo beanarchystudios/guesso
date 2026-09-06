@@ -72,10 +72,11 @@
 								{:else}
 									<HugeiconsIcon
 										icon={StarOffIcon}
+										class="fill-(--course)"
 										size={20}
 										strokeWidth={2}
 										color="var(--muted-foreground)"
-										fill="none"
+										fill="var(--course)"
 										aria-label="Not a favorite"
 									/>
 								{/if}
