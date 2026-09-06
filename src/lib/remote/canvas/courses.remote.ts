@@ -22,12 +22,27 @@ export type FavoriteCourse = {
 	image_download_url?: string;
 };
 
+export type Course = {
+	id: string | number;
+	name: string;
+	enrollments?: Array<{
+		enrollment_state?: 'active' | 'invited_or_pending' | 'completed';
+	}>;
+};
+
 export const listCourses = query('unchecked', async (input: CourseListInput = {}) =>
 	canvasPage<CanvasRecord>('courses', {
 		enrollment_state: input.enrollmentState,
 		state: input.state,
 		'include[]': input.include,
 		per_page: bounded(input.perPage)
+	})
+);
+
+export const listAllCourses = query(async () =>
+	canvasAllPages<Course>('courses', {
+		'include[]': ['enrollments'],
+		per_page: 100
 	})
 );
 
