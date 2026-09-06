@@ -1,0 +1,6 @@
+#!/bin/sh
+set -eu
+
+project_root=${PWD%/.delta/worktrees/*}
+cp "$project_root/.env" .env
+bun install
