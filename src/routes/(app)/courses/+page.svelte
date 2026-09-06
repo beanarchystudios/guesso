@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { HugeiconsIcon } from '@hugeicons/svelte';
+	import { StarIcon, StarOffIcon } from '@hugeicons/core-free-icons';
 	import * as Table from '$lib/components/ui/table';
+	import { getCustomColors } from '$lib/remote/canvas/account.remote';
 	import {
 		listAllCourses,
 		listFavoriteCourses,
@@ -9,10 +12,12 @@
 
 	const coursesQuery = listAllCourses();
 	const favoritesQuery = listFavoriteCourses();
+	const customColorsQuery = getCustomColors();
 	const courses = $derived(coursesQuery.current ?? []);
 	const favoriteIds = $derived(
 		new Set((favoritesQuery.current ?? []).map((course) => String(course.id)))
 	);
+	const colors = $derived(customColorsQuery.current ?? {});
 
 	function isEnrolled(course: Course) {
 		return course.enrollments?.some(
@@ -33,19 +38,39 @@
 	{:else if courses.length === 0}
 		<p class="mt-6 text-sm text-muted-foreground">No courses found.</p>
 	{:else}
-		<div class="mt-6 rounded-lg border">
+		<div class="mt-6">
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head scope="col">Favorite</Table.Head>
-						<Table.Head scope="col">Name</Table.Head>
-						<Table.Head scope="col">Enrolled</Table.Head>
+						<Table.Head class="text-muted-foreground" scope="col">Favorite</Table.Head>
+						<Table.Head class="text-muted-foreground" scope="col">Name</Table.Head>
+						<Table.Head class="text-muted-foreground" scope="col">Enrolled</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
 					{#each courses as course (course.id)}
-						<Table.Row>
-							<Table.Cell>{favoriteIds.has(String(course.id)) ? 'Yes' : 'No'}</Table.Cell>
+						<Table.Row style={`--course: ${colors[`course_${course.id}`] ?? 'var(--primary)'}`}>
+							<Table.Cell>
+								{#if favoriteIds.has(String(course.id))}
+									<HugeiconsIcon
+										icon={StarIcon}
+										size={20}
+										strokeWidth={2}
+										color="var(--course)"
+										fill="var(--course)"
+										aria-label="Favorite"
+									/>
+								{:else}
+									<HugeiconsIcon
+										icon={StarOffIcon}
+										size={20}
+										strokeWidth={2}
+										color="var(--muted-foreground)"
+										fill="none"
+										aria-label="Not a favorite"
+									/>
+								{/if}
+							</Table.Cell>
 							<Table.Cell>
 								<a
 									href={resolve(`/courses/${course.id}`)}
