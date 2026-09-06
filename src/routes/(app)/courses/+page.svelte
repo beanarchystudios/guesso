@@ -38,7 +38,7 @@
 	{:else if courses.length === 0}
 		<p class="mt-6 text-sm text-muted-foreground">No courses found.</p>
 	{:else}
-		<div class="mt-6">
+		<div>
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
