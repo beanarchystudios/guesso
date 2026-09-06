@@ -17,11 +17,11 @@
 <div class="min-h-full">
 	<div class="w-full">
 		{#if favoriteCourses.loading && !favoriteCourses.ready}
-			<p class="text-sm text-muted-foreground" role="status">Loading favorite courses...</p>
+			<p class="p-4 text-sm text-muted-foreground" role="status">Loading favorite courses...</p>
 		{:else if favoriteCourses.error}
-			<p class="text-sm text-destructive" role="alert">Unable to load favorite courses.</p>
+			<p class="p-4 text-sm text-destructive" role="alert">Unable to load favorite courses.</p>
 		{:else if courses.length === 0}
-			<p class="text-sm text-muted-foreground">No favorite courses yet.</p>
+			<p class="p-4 text-sm text-muted-foreground">No favorite courses yet.</p>
 		{:else}
 			<div
 				class="grid auto-rows-min gap-4 p-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6"
