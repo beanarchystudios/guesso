@@ -97,3 +97,5 @@ Explain the problem, the change, and the evidence that it works. State assumptio
 Update documentation when setup, usage, or an architectural constraint changes. Keep local implementation explanations next to the code. Do not add feature inventories, agent work logs, or implementation plans to the repository.
 
 Create commits or pull requests only when requested. Use plain, conventional titles such as `fix(calendar): preserve date-only deadlines`. Keep each change focused on one concern.
+
+When creating a PR with UI changes, attach a screenshot showing the changed UI using the GitHub CLI's `--attach` flag. After further UI changes to that PR, attach a new screenshot showing the latest version, either by updating the existing PR description or by adding a PR comment.
