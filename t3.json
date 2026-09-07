@@ -4,7 +4,7 @@
 	"scripts": [
 		{
 			"name": "Setup Worktree",
-			"command": "set -eu && bun install && cp \"$T3CODE_PROJECT_ROOT/.env\" .env",
+			"command": "ln -sf $T3CODE_PROJECT_ROOT/.env .env && bun install",
 			"runOnWorktreeCreate": true
 		}
 	]
