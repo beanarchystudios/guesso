@@ -78,7 +78,7 @@ There is currently no test script configured. Do not claim tests passed when onl
 
 Use the smallest verification that proves the change. Documentation-only edits need a content and formatting review, not an app build. Report what you checked and what remains unverified.
 
-Ask before launching browsers or using computer automation unless the maintainer already requested it. When an integrated UI check is authorized, cover the affected workflow once, including its loading, empty, and error states.
+When an integrated UI check is used, cover the affected workflow once, including its loading, empty, and error states.
 
 Do not stop unrelated dev servers. Track processes you start and stop only those processes. Never kill processes by matching a name or worktree path. Keep local secrets and personal data out of cleanup commands.
 
