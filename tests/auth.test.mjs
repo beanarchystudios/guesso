@@ -67,6 +67,9 @@ test('direct app requests require login; rejected credentials never create sessi
 	const response = await request('/courses/42');
 	assert.equal(response.status, 303);
 	assert.equal(response.headers.get('location'), '/login?next=%2Fcourses%2F42');
+	const profile = await request('/profile');
+	assert.equal(profile.status, 303);
+	assert.equal(profile.headers.get('location'), '/login?next=%2Fprofile');
 	const failed = await login('rejected');
 	assert.equal(failed.status, 400);
 	assert.equal(failed.headers.get('set-cookie'), null);

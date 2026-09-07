@@ -113,6 +113,7 @@
 									<Sidebar.MenuButton
 										{...props}
 										size="lg"
+										isActive={page.url.pathname === '/profile'}
 										aria-label={`Account menu for ${account.name}`}
 									>
 										<Avatar.Root><Avatar.Fallback>{initials}</Avatar.Fallback></Avatar.Root>
@@ -126,6 +127,11 @@
 								{/snippet}
 							</DropdownMenu.Trigger>
 							<DropdownMenu.Content side="top" align="start" class="min-w-48">
+								<DropdownMenu.Item>
+									{#snippet child({ props })}
+										<a href={resolve('/profile')} {...props}>Profile</a>
+									{/snippet}
+								</DropdownMenu.Item>
 								<DropdownMenu.Item onSelect={() => signOutForm?.requestSubmit()}
 									>Sign out</DropdownMenu.Item
 								>

@@ -1,7 +1,20 @@
 import { command, query } from '$app/server';
 import { canvasGet, canvasMutation, canvasPage, id, type CanvasRecord } from '$lib/server/canvas';
 
-export const getCurrentUser = query(async () => canvasGet<CanvasRecord>('users/self/profile'));
+export interface CurrentUser {
+	name: string;
+	short_name?: string | null;
+	avatar_url?: string | null;
+	bio?: string | null;
+	primary_email?: string | null;
+	email?: string | null;
+	login_id?: string | null;
+	time_zone?: string | null;
+	locale?: string | null;
+	html_url?: string | null;
+}
+
+export const getCurrentUser = query(async () => canvasGet<CurrentUser>('users/self/profile'));
 
 export const getUserSettings = query(async () => canvasGet<CanvasRecord>('users/self/settings'));
 
