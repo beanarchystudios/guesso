@@ -1,16 +1,64 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { HugeiconsIcon } from '@hugeicons/svelte';
-	import { Link01Icon } from '@hugeicons/core-free-icons';
+	import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/svelte';
+	import {
+		AssignmentsIcon,
+		CalendarCheckIcon,
+		Chat01Icon,
+		ClipboardCheckIcon,
+		ExternalLinkIcon,
+		FileTextIcon,
+		Folder01Icon,
+		Home01Icon,
+		NotebookIcon,
+		NotebookTextIcon,
+		NotebookTabsIcon,
+		Notification03Icon,
+		Quiz01Icon,
+		SchoolReportCardIcon,
+		Settings01Icon,
+		Target02Icon,
+		UserGroupIcon,
+		UserMultipleIcon,
+		Video01Icon
+	} from '@hugeicons/core-free-icons';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { getCourse, listCourseTabs, type CourseTab } from '$lib/remote/canvas/courses.remote';
 
 	let { courseId } = $props<{ courseId: string }>();
 
-	const courseQuery = getCourse({ courseId });
-	const courseTabsQuery = listCourseTabs({ courseId });
+	const courseQuery = $derived.by(() => getCourse({ courseId }));
+	const courseTabsQuery = $derived.by(() => listCourseTabs({ courseId }));
 	const course = $derived(courseQuery.current);
 	const tabs = $derived(courseTabsQuery.current ?? []);
+
+	const courseTabIcons: Record<string, IconSvgElement> = {
+		home: Home01Icon,
+		modules: NotebookTabsIcon,
+		assignments: AssignmentsIcon,
+		quizzes: Quiz01Icon,
+		grades: SchoolReportCardIcon,
+		people: UserMultipleIcon,
+		discussions: Chat01Icon,
+		announcements: Notification03Icon,
+		conferences: Video01Icon,
+		collaborations: UserGroupIcon,
+		files: Folder01Icon,
+		pages: FileTextIcon,
+		syllabus: NotebookTextIcon,
+		outcomes: Target02Icon,
+		rubrics: ClipboardCheckIcon,
+		attendance: CalendarCheckIcon,
+		settings: Settings01Icon,
+		external_tool: ExternalLinkIcon,
+		external_tools: ExternalLinkIcon,
+		notebook: NotebookIcon
+	};
+
+	function getCourseTabIcon(tab: CourseTab) {
+		if (tab.id.startsWith('context_external_tool_')) return ExternalLinkIcon;
+		return courseTabIcons[tab.id] ?? FileTextIcon;
+	}
 
 	function isActive(tab: CourseTab) {
 		const coursePath = `/courses/${courseId}`;
@@ -38,7 +86,7 @@
 										rel="external noopener noreferrer"
 										{...props}
 									>
-										<HugeiconsIcon icon={Link01Icon} strokeWidth={2} />
+										<HugeiconsIcon icon={getCourseTabIcon(tab)} strokeWidth={2} />
 										<span>{tab.label}</span>
 									</a>
 								{/snippet}
