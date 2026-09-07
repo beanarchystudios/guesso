@@ -15,8 +15,7 @@
 		<a href={resolve('/')} class="text-2xl font-bold tracking-tight text-chart-1">Guesso</a>
 		<h1 class="mt-8 text-3xl font-semibold tracking-tight">Connect to Canvas</h1>
 		<p class="mt-3 text-muted-foreground">
-			Your courses, deadlines, and messages, all in one place. Sign in with your school's Canvas
-			address and a personal API token.
+			Sign in with your school's Canvas address and a personal API token.
 		</p>
 		{#if data.expired && !form?.message}
 			<p role="status" class="mt-6 text-sm text-muted-foreground">
