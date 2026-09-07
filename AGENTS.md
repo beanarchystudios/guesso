@@ -78,7 +78,7 @@ There is currently no test script configured. Do not claim tests passed when onl
 
 Use the smallest verification that proves the change. Documentation-only edits need a content and formatting review, not an app build. Report what you checked and what remains unverified.
 
-Ask before launching browsers or using computer automation unless the maintainer already requested it. When an integrated UI check is authorized, cover the affected workflow once, including its loading, empty, and error states.
+When an integrated UI check is used, cover the affected workflow once, including its loading, empty, and error states.
 
 Do not stop unrelated dev servers. Track processes you start and stop only those processes. Never kill processes by matching a name or worktree path. Keep local secrets and personal data out of cleanup commands.
 
@@ -98,4 +98,4 @@ Update documentation when setup, usage, or an architectural constraint changes. 
 
 Create commits or pull requests only when requested. Use plain, conventional titles such as `fix(calendar): preserve date-only deadlines`. Keep each change focused on one concern.
 
-When creating a PR with UI changes, attach a screenshot showing the changed UI using the GitHub CLI's `--attach` flag. After further UI changes to that PR, attach a new screenshot showing the latest version, either by updating the existing PR description or by adding a PR comment.
+When creating a PR with UI changes, attach a screenshot showing the changed UI using the GitHub CLI's `--attach` flag. Screenshots must be at least 1280×720. After further UI changes to that PR, attach a new screenshot showing the latest version, either by updating the existing PR description or by adding a PR comment.

@@ -30,6 +30,42 @@ export type Course = {
 	}>;
 };
 
+export type CourseDetails = {
+	name: string;
+};
+
+export type CourseTab = {
+	id: string;
+	label: string;
+	htmlUrl: string;
+};
+
+function stringField(value: unknown) {
+	return typeof value === 'string' && value.trim() ? value.trim() : null;
+}
+
+function parseCourse(record: CanvasRecord): CourseDetails | null {
+	const name = stringField(record.name);
+	return name ? { name } : null;
+}
+
+function parseCourseTab(record: CanvasRecord): CourseTab | null {
+	const id = stringField(record.id);
+	const label = stringField(record.label);
+	const htmlUrl = stringField(record.html_url);
+
+	if (!id || !label || !htmlUrl || record.hidden === true) return null;
+
+	try {
+		const url = new URL(htmlUrl);
+		if (url.protocol !== 'http:' && url.protocol !== 'https:') return null;
+	} catch {
+		return null;
+	}
+
+	return { id, label, htmlUrl };
+}
+
 export const listCourses = query('unchecked', async (input: CourseListInput = {}) =>
 	canvasPage<CanvasRecord>('courses', {
 		enrollment_state: input.enrollmentState,
@@ -55,14 +91,23 @@ export const listFavoriteCourses = query(async () =>
 
 export const getCourse = query(
 	'unchecked',
-	async (input: { courseId: string | number; include?: string[] }) =>
-		canvasGet<CanvasRecord>(`courses/${id(input.courseId, 'courseId')}`, {
-			'include[]': input.include
-		})
+	async (input: { courseId: string | number; include?: string[] }): Promise<CourseDetails | null> =>
+		parseCourse(
+			await canvasGet<CanvasRecord>(`courses/${id(input.courseId, 'courseId')}`, {
+				'include[]': input.include
+			})
+		)
 );
 
-export const listCourseTabs = query('unchecked', async (input: { courseId: string | number }) =>
-	canvasPage<CanvasRecord>(`courses/${id(input.courseId, 'courseId')}/tabs`)
+export const listCourseTabs = query(
+	'unchecked',
+	async (input: { courseId: string | number }): Promise<CourseTab[]> =>
+		(await canvasAllPages<CanvasRecord>(`courses/${id(input.courseId, 'courseId')}/tabs`)).flatMap(
+			(tab) => {
+				const parsed = parseCourseTab(tab);
+				return parsed ? [parsed] : [];
+			}
+		)
 );
 
 export const getCourseActivity = query(
