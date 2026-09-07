@@ -1,5 +1,6 @@
-import { env } from '$env/dynamic/private';
-import { error } from '@sveltejs/kit';
+import { getRequestEvent } from '$app/server';
+import { canvasFetch } from './canvas-connection';
+import { error, redirect } from '@sveltejs/kit';
 import ky, { HTTPError, type Options } from 'ky';
 
 export type CanvasId = string | number;
@@ -13,25 +14,9 @@ export interface CanvasPage<T> {
 }
 
 function configuration() {
-	const instanceUrl = env.CANVAS_INSTANCE_URL?.trim().replace(/\/+$/, '');
-	const token = env.CANVAS_API_TOKEN?.trim();
-
-	if (!instanceUrl || !token) {
-		error(500, 'CANVAS_INSTANCE_URL and CANVAS_API_TOKEN must be configured');
-	}
-
-	let origin: URL;
-	try {
-		origin = new URL(instanceUrl);
-	} catch {
-		error(500, 'CANVAS_INSTANCE_URL must be a valid URL');
-	}
-
-	if (!['http:', 'https:'].includes(origin.protocol)) {
-		error(500, 'CANVAS_INSTANCE_URL must use HTTP or HTTPS');
-	}
-
-	return { instanceUrl, token };
+	const session = getRequestEvent().locals.canvas;
+	if (!session) redirect(303, '/login');
+	return session;
 }
 
 function searchParams(query: CanvasQuery = {}) {
@@ -54,7 +39,7 @@ function nextLink(value: string | null) {
 }
 
 async function translateError(cause: unknown): Promise<never> {
-	if (!(cause instanceof HTTPError)) throw cause;
+	if (!(cause instanceof HTTPError)) error(502, 'Could not reach Canvas. Please try again.');
 
 	const status = cause.response.status;
 	let message = `Canvas request failed with status ${status}`;
@@ -68,7 +53,9 @@ async function translateError(cause: unknown): Promise<never> {
 		// Canvas sometimes returns an HTML error page.
 	}
 
-	if (status === 401) error(401, 'Canvas API token is invalid or expired');
+	if (status === 401) {
+		redirect(303, '/login?expired=1');
+	}
 	if (status === 403) error(403, message);
 	if (status === 404) error(404, message);
 	if (status === 409) error(409, message);
@@ -85,8 +72,11 @@ async function request<T>(
 	const { query, ...requestOptions } = options;
 	const url = path.startsWith('http') ? path : `${instanceUrl}/api/v1/${path.replace(/^\/+/, '')}`;
 
+	if (new URL(url).origin !== instanceUrl) error(400, 'Invalid Canvas URL');
 	try {
 		const response = await ky(url, {
+			fetch: canvasFetch,
+			redirect: 'error',
 			...requestOptions,
 			searchParams: query ? searchParams(query) : requestOptions.searchParams,
 			headers: {

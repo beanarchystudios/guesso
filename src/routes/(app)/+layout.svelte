@@ -12,8 +12,20 @@
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import CourseSidebar from '$lib/components/course-sidebar.svelte';
 
-	let { children } = $props();
+	import * as Avatar from '$lib/components/ui/avatar';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	let { children, data } = $props();
 	const courseId = $derived(page.params.courseId);
+	const initials = $derived(
+		data.account?.name
+			.trim()
+			.split(/\s+/)
+			.slice(0, 2)
+			.map((part) => Array.from(part)[0])
+			.join('')
+			.toUpperCase() || '?'
+	);
+	let signOutForm = $state<HTMLFormElement>();
 </script>
 
 <Sidebar.Provider>
@@ -90,9 +102,47 @@
 				{/key}
 			{/if}
 		</Sidebar.Content>
+		<Sidebar.Footer>
+			{#if data.account}
+				{@const account = data.account}
+				<Sidebar.Menu>
+					<Sidebar.MenuItem>
+						<DropdownMenu.Root>
+							<DropdownMenu.Trigger>
+								{#snippet child({ props })}
+									<Sidebar.MenuButton
+										{...props}
+										size="lg"
+										aria-label={`Account menu for ${account.name}`}
+									>
+										<Avatar.Root><Avatar.Fallback>{initials}</Avatar.Fallback></Avatar.Root>
+										<div class="grid min-w-0 flex-1 text-left text-sm">
+											<span class="truncate font-medium">{account.name}</span>
+											<span class="truncate text-xs text-muted-foreground"
+												>{new URL(account.instanceUrl).hostname}</span
+											>
+										</div>
+									</Sidebar.MenuButton>
+								{/snippet}
+							</DropdownMenu.Trigger>
+							<DropdownMenu.Content side="top" align="start" class="min-w-48">
+								<DropdownMenu.Item onSelect={() => signOutForm?.requestSubmit()}
+									>Sign out</DropdownMenu.Item
+								>
+							</DropdownMenu.Content>
+						</DropdownMenu.Root>
+					</Sidebar.MenuItem>
+				</Sidebar.Menu>
+				<form bind:this={signOutForm} method="POST" action="/logout" hidden></form>
+			{/if}
+		</Sidebar.Footer>
 	</Sidebar.Root>
 
 	<Sidebar.Inset class="max-h-[calc(100vh-1rem)] overflow-hidden">
+		<div class="flex items-center gap-2 border-b p-2 md:hidden">
+			<Sidebar.Trigger />
+			<span class="text-sm font-medium">Guesso</span>
+		</div>
 		{@render children()}
 	</Sidebar.Inset>
 </Sidebar.Provider>
