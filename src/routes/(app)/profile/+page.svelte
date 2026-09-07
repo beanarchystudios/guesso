@@ -1,5 +1,6 @@
 <script lang="ts">
 	import * as Avatar from '$lib/components/ui/avatar';
+	import { Separator } from '$lib/components/ui/separator';
 	import { getCurrentUser } from '$lib/remote/canvas/account.remote';
 
 	const userQuery = getCurrentUser();
@@ -47,6 +48,8 @@
 						{/if}
 					</div>
 				</div>
+
+				<Separator />
 
 				<dl class="grid gap-x-6 gap-y-5 sm:grid-cols-2">
 					<div>
