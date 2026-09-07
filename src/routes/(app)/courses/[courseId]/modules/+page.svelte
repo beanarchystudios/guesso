@@ -38,13 +38,6 @@
 
 <main class="h-full overflow-y-auto">
 	<div class="mx-auto w-full max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
-		<header class="mb-6">
-			<h1 class="text-2xl font-semibold tracking-tight">Modules</h1>
-			<p class="mt-1 text-sm text-muted-foreground">
-				Follow the course content in the order your instructor provided it.
-			</p>
-		</header>
-
 		{#if modulesQuery.loading && !modulesQuery.ready && modules.length === 0}
 			<div class="space-y-3" aria-hidden="true">
 				{#each [0, 1, 2, 3] as skeleton (skeleton)}
