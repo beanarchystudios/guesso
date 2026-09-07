@@ -4,6 +4,10 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+	ssr: {
+		// Keep the CommonJS sanitizer and parser inside Vercel's function bundle.
+		noExternal: ['sanitize-html', 'htmlparser2']
+	},
 	plugins: [
 		tailwindcss(),
 		sveltekit({
