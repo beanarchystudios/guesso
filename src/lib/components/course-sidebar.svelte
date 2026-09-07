@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { resolve } from '$app/paths';
 	import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/svelte';
 	import {
 		AssignmentsIcon,
@@ -31,6 +32,7 @@
 	const courseTabsQuery = $derived.by(() => listCourseTabs({ courseId }));
 	const course = $derived(courseQuery.current);
 	const tabs = $derived(courseTabsQuery.current ?? []);
+	const resolvePath = resolve as unknown as (path: string) => string;
 
 	const courseTabIcons: Record<string, IconSvgElement> = {
 		home: Home01Icon,
@@ -80,15 +82,26 @@
 						<Sidebar.MenuItem>
 							<Sidebar.MenuButton isActive={isActive(tab)} tooltipContent={tab.label}>
 								{#snippet child({ props })}
-									<a
-										href={tab.htmlUrl}
-										target="_blank"
-										rel="external noopener noreferrer"
-										{...props}
-									>
-										<HugeiconsIcon icon={getCourseTabIcon(tab)} strokeWidth={2} />
-										<span>{tab.label}</span>
-									</a>
+									{#if tab.id === 'modules'}
+										<!-- eslint-disable svelte/no-navigation-without-resolve -- runtime route is passed through resolvePath. -->
+										<a href={resolvePath(`/courses/${courseId}/modules`)} {...props}>
+											<HugeiconsIcon icon={getCourseTabIcon(tab)} strokeWidth={2} />
+											<span>{tab.label}</span>
+										</a>
+										<!-- eslint-enable svelte/no-navigation-without-resolve -->
+									{:else}
+										<!-- eslint-disable svelte/no-navigation-without-resolve -- Canvas URL is validated server-side. -->
+										<a
+											href={tab.htmlUrl}
+											target="_blank"
+											rel="external noopener noreferrer"
+											{...props}
+										>
+											<HugeiconsIcon icon={getCourseTabIcon(tab)} strokeWidth={2} />
+											<span>{tab.label}</span>
+										</a>
+										<!-- eslint-enable svelte/no-navigation-without-resolve -->
+									{/if}
 								{/snippet}
 							</Sidebar.MenuButton>
 						</Sidebar.MenuItem>

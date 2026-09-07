@@ -1,12 +1,21 @@
 import { command, query } from '$app/server';
 import {
 	bounded,
+	canvasAllPages,
 	canvasGet,
+	canvasInstanceUrl,
 	canvasMutation,
 	canvasPage,
 	id,
 	type CanvasRecord
 } from '$lib/server/canvas';
+import {
+	parseCourseModule,
+	type CourseModule,
+	type CourseModuleItem
+} from '$lib/server/course-modules';
+
+export type { CourseModule, CourseModuleItem };
 
 export const listModules = query(
 	'unchecked',
@@ -15,6 +24,22 @@ export const listModules = query(
 			'include[]': input.include,
 			per_page: bounded(input.perPage)
 		})
+);
+
+export const listCourseModules = query(
+	'unchecked',
+	async (input: { courseId: string | number }): Promise<CourseModule[]> => {
+		const instanceUrl = canvasInstanceUrl();
+		return (
+			await canvasAllPages<CanvasRecord>(`courses/${id(input.courseId, 'courseId')}/modules`, {
+				'include[]': ['items'],
+				per_page: 100
+			})
+		).flatMap((module) => {
+			const parsed = parseCourseModule(module, instanceUrl);
+			return parsed ? [parsed] : [];
+		});
+	}
 );
 
 export const getModule = query(
