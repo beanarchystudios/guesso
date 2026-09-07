@@ -48,7 +48,6 @@
 
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import type { PathnameWithSearchOrHash } from '$app/types';
 
 	let {
 		class: className,
@@ -61,6 +60,12 @@
 		children,
 		...restProps
 	}: ButtonProps = $props();
+	const resolvePath = resolve as unknown as (path: string) => string;
+
+	function resolveInternalPath(path: string) {
+		// Button hrefs are runtime values, while SvelteKit's generated resolve type only accepts literal routes.
+		return resolvePath(path);
+	}
 </script>
 
 {#if href}
@@ -69,11 +74,7 @@
 		bind:this={ref}
 		data-slot="button"
 		class={cn(buttonVariants({ variant, size }), className)}
-		href={disabled
-			? undefined
-			: href?.startsWith('/')
-				? resolve(href as PathnameWithSearchOrHash)
-				: href}
+		href={disabled ? undefined : href?.startsWith('/') ? resolveInternalPath(href) : href}
 		aria-disabled={disabled}
 		role={disabled ? 'link' : undefined}
 		tabindex={disabled ? -1 : undefined}
