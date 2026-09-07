@@ -19,6 +19,10 @@ function configuration() {
 	return session;
 }
 
+export function canvasInstanceUrl() {
+	return configuration().instanceUrl;
+}
+
 function searchParams(query: CanvasQuery = {}) {
 	const params = new URLSearchParams();
 	for (const [key, raw] of Object.entries(query)) {

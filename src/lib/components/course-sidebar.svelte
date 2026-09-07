@@ -7,8 +7,8 @@
 
 	let { courseId } = $props<{ courseId: string }>();
 
-	const courseQuery = $derived.by(() => getCourse({ courseId }));
-	const courseTabsQuery = $derived.by(() => listCourseTabs({ courseId }));
+	const courseQuery = getCourse({ courseId });
+	const courseTabsQuery = listCourseTabs({ courseId });
 	const course = $derived(courseQuery.current);
 	const tabs = $derived(courseTabsQuery.current ?? []);
 
@@ -26,7 +26,7 @@
 			>{course.name}</Sidebar.GroupLabel
 		>
 		<Sidebar.GroupContent>
-			{#if courseTabsQuery.ready && tabs.length > 0}
+			{#if tabs.length > 0}
 				<Sidebar.Menu>
 					{#each tabs as tab (tab.id)}
 						<Sidebar.MenuItem>
@@ -46,10 +46,10 @@
 						</Sidebar.MenuItem>
 					{/each}
 				</Sidebar.Menu>
-			{:else if courseTabsQuery.loading}
-				<p class="px-3 text-xs text-muted-foreground" role="status">Loading tabs...</p>
 			{:else if courseTabsQuery.error}
 				<p class="px-3 text-xs text-destructive" role="alert">Unable to load course tabs.</p>
+			{:else if courseTabsQuery.loading || !courseTabsQuery.ready}
+				<p class="px-3 text-xs text-muted-foreground" role="status">Loading tabs...</p>
 			{/if}
 		</Sidebar.GroupContent>
 	</Sidebar.Group>
