@@ -12,9 +12,20 @@
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import CourseSidebar from '$lib/components/course-sidebar.svelte';
 
-	import { Button } from '$lib/components/ui/button';
+	import * as Avatar from '$lib/components/ui/avatar';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	let { children, data } = $props();
 	const courseId = $derived(page.params.courseId);
+	const initials = $derived(
+		data.account?.name
+			.trim()
+			.split(/\s+/)
+			.slice(0, 2)
+			.map((part) => Array.from(part)[0])
+			.join('')
+			.toUpperCase() || '?'
+	);
+	let signOutForm = $state<HTMLFormElement>();
 </script>
 
 <Sidebar.Provider>
@@ -93,16 +104,37 @@
 		</Sidebar.Content>
 		<Sidebar.Footer>
 			{#if data.account}
-				<div class="px-2 text-sm">
-					<p class="truncate font-medium" title={data.account.name}>{data.account.name}</p>
-					<p class="truncate text-xs text-muted-foreground" title={data.account.instanceUrl}>
-						{new URL(data.account.instanceUrl).hostname}
-					</p>
-				</div>
+				{@const account = data.account}
+				<Sidebar.Menu>
+					<Sidebar.MenuItem>
+						<DropdownMenu.Root>
+							<DropdownMenu.Trigger>
+								{#snippet child({ props })}
+									<Sidebar.MenuButton
+										{...props}
+										size="lg"
+										aria-label={`Account menu for ${account.name}`}
+									>
+										<Avatar.Root><Avatar.Fallback>{initials}</Avatar.Fallback></Avatar.Root>
+										<div class="grid min-w-0 flex-1 text-left text-sm">
+											<span class="truncate font-medium">{account.name}</span>
+											<span class="truncate text-xs text-muted-foreground"
+												>{new URL(account.instanceUrl).hostname}</span
+											>
+										</div>
+									</Sidebar.MenuButton>
+								{/snippet}
+							</DropdownMenu.Trigger>
+							<DropdownMenu.Content side="top" align="start" class="min-w-48">
+								<DropdownMenu.Item onSelect={() => signOutForm?.requestSubmit()}
+									>Sign out</DropdownMenu.Item
+								>
+							</DropdownMenu.Content>
+						</DropdownMenu.Root>
+					</Sidebar.MenuItem>
+				</Sidebar.Menu>
+				<form bind:this={signOutForm} method="POST" action="/logout" hidden></form>
 			{/if}
-			<form method="POST" action="/logout">
-				<Button type="submit" variant="outline" class="w-full">Sign out</Button>
-			</form>
 		</Sidebar.Footer>
 	</Sidebar.Root>
 
