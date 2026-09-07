@@ -12,7 +12,8 @@
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import CourseSidebar from '$lib/components/course-sidebar.svelte';
 
-	let { children } = $props();
+	import { Button } from '$lib/components/ui/button';
+	let { children, data } = $props();
 	const courseId = $derived(page.params.courseId);
 </script>
 
@@ -90,9 +91,26 @@
 				{/key}
 			{/if}
 		</Sidebar.Content>
+		<Sidebar.Footer>
+			{#if data.account}
+				<div class="px-2 text-sm">
+					<p class="truncate font-medium" title={data.account.name}>{data.account.name}</p>
+					<p class="truncate text-xs text-muted-foreground" title={data.account.instanceUrl}>
+						{new URL(data.account.instanceUrl).hostname}
+					</p>
+				</div>
+			{/if}
+			<form method="POST" action="/logout">
+				<Button type="submit" variant="outline" class="w-full">Sign out</Button>
+			</form>
+		</Sidebar.Footer>
 	</Sidebar.Root>
 
 	<Sidebar.Inset class="max-h-[calc(100vh-1rem)] overflow-hidden">
+		<div class="flex items-center gap-2 border-b p-2 md:hidden">
+			<Sidebar.Trigger />
+			<span class="text-sm font-medium">Guesso</span>
+		</div>
 		{@render children()}
 	</Sidebar.Inset>
 </Sidebar.Provider>

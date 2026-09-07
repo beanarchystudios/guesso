@@ -54,10 +54,10 @@ Prefer inferred types. Define the Canvas response fields a feature uses instead 
 
 ## Working with Canvas
 
-The current connection uses server-private `CANVAS_INSTANCE_URL` and `CANVAS_API_TOKEN`. This is a configured Canvas account, not an implemented per-student sign-in system. Do not assume account isolation exists.
+Users connect with their own Canvas URL and API token. Credentials live in an encrypted HttpOnly session cookie protected by server-private `SESSION_SECRET`. Read credentials from request locals and preserve isolation between accounts.
 
 - Keep tokens on the server. Never put them in public environment variables, browser storage, logs, screenshots, or committed fixtures.
-- Use the configured Canvas instance. Do not hardcode a school domain or localhost origin into client code.
+- Use the current session's Canvas instance. Do not hardcode a school domain or localhost origin into client code.
 - Follow Canvas pagination links and preserve the same-origin check before sending credentials to a next-page URL.
 - Respect rate limits. Avoid unbounded parallel requests, aggressive polling, and automatic retries of submissions or messages.
 - Treat Canvas HTML as untrusted when rendering rich content. Use a deliberate sanitization policy before introducing `{@html}` for API content.
@@ -74,7 +74,7 @@ The current connection uses server-private `CANVAS_INSTANCE_URL` and `CANVAS_API
 - `bun run lint` checks formatting and ESLint across the project. For small changes, target changed files with `bunx prettier --check <files>` and `bunx eslint <files>` where applicable.
 - `bun run format` rewrites formatting across the project. Prefer formatting only the files you changed.
 
-There is currently no test script configured. Do not claim tests passed when only lint or type checks ran. For new logic, add focused behavioral coverage when appropriate; avoid tests that only repeat implementation details. Prioritize pagination, date handling, error recovery, and mutation outcomes over assertions about component wiring.
+`bun run test:auth` runs focused authentication tests against a production build with mocked Canvas responses. Run `bun run build` first. Do not claim tests passed when only lint or type checks ran. For new logic, add focused behavioral coverage when appropriate; avoid tests that only repeat implementation details. Prioritize pagination, date handling, error recovery, and mutation outcomes over assertions about component wiring.
 
 Use the smallest verification that proves the change. Documentation-only edits need a content and formatting review, not an app build. Report what you checked and what remains unverified.
 
