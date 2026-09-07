@@ -10,8 +10,10 @@
 		PaintBoardIcon
 	} from '@hugeicons/core-free-icons';
 	import * as Sidebar from '$lib/components/ui/sidebar';
+	import CourseSidebar from '$lib/components/course-sidebar.svelte';
 
 	let { children } = $props();
+	const courseId = $derived(page.params.courseId);
 </script>
 
 <Sidebar.Provider>
@@ -81,6 +83,12 @@
 					</Sidebar.Menu>
 				</Sidebar.GroupContent>
 			</Sidebar.Group>
+
+			{#if courseId}
+				{#key courseId}
+					<CourseSidebar {courseId} />
+				{/key}
+			{/if}
 		</Sidebar.Content>
 	</Sidebar.Root>
 
