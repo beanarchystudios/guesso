@@ -64,17 +64,20 @@
 				type="multiple"
 				value={openModules}
 				onValueChange={(value) => (userOpenModules = value)}
-				class="overflow-visible border-y border-border/70"
+				class="overflow-visible rounded-none border-0 bg-transparent"
 			>
 				{#each modules as module (module.id)}
-					<Accordion.Item value={module.id} class="text-card-foreground data-open:bg-transparent!">
+					<Accordion.Item
+						value={module.id}
+						class="border-b border-border/70 bg-transparent text-card-foreground first:border-t data-open:bg-transparent!"
+					>
 						<Accordion.Trigger
-							class="items-center gap-4 rounded-none border-0 px-0 py-5 text-left hover:text-primary hover:no-underline focus-visible:ring-3 focus-visible:ring-ring/30"
+							class="items-center gap-4 rounded-none border-0 px-0 py-5 text-left hover:text-chart-1 hover:no-underline focus-visible:ring-3 focus-visible:ring-ring/30"
 						>
 							<HugeiconsIcon
 								icon={NotebookTabsIcon}
 								strokeWidth={2}
-								class="size-5 shrink-0 text-primary transition-colors"
+								class="size-5 shrink-0 text-chart-1 transition-colors"
 							/>
 							<span class="min-w-0 flex-1 truncate text-base font-semibold sm:text-lg">
 								{module.name}
@@ -107,13 +110,13 @@
 													href={item.href}
 													target="_blank"
 													rel="external noopener noreferrer"
-													class="group/item flex items-center gap-3 px-4 py-3 pl-[calc(1rem+var(--item-indent)*1.25rem)] text-sm text-foreground/85 transition-colors outline-none hover:text-primary focus-visible:text-primary focus-visible:ring-3 focus-visible:ring-ring/30 focus-visible:ring-inset"
+													class="group/item flex items-center gap-3 px-4 py-3 pl-[calc(1rem+var(--item-indent)*1.25rem)] text-sm text-foreground/85 transition-colors outline-none hover:text-chart-1 focus-visible:text-chart-1 focus-visible:ring-3 focus-visible:ring-ring/30 focus-visible:ring-inset"
 													style={`--item-indent: ${item.indent}`}
 												>
 													<HugeiconsIcon
 														icon={getItemIcon(item)}
 														strokeWidth={2}
-														class="size-[1.125rem] shrink-0 text-muted-foreground transition-colors group-hover/item:text-primary"
+														class="size-[1.125rem] shrink-0 text-muted-foreground transition-colors group-hover/item:text-chart-1"
 													/>
 													<span class="min-w-0 flex-1 truncate">{item.title}</span>
 													{#if item.completed === true}
