@@ -60,8 +60,6 @@
 				</p>
 			{/if}
 
-			<h1 class="mb-8 text-2xl font-semibold tracking-tight">Modules</h1>
-
 			<Accordion.Root
 				type="multiple"
 				value={openModules}
