@@ -3,7 +3,6 @@
 	import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/svelte';
 	import {
 		AssignmentsIcon,
-		ArrowDown01Icon,
 		Chat01Icon,
 		CheckmarkCircle02Icon,
 		ExternalLinkIcon,
@@ -13,11 +12,16 @@
 		NotebookTabsIcon,
 		Quiz01Icon
 	} from '@hugeicons/core-free-icons';
+	import * as Accordion from '$lib/components/ui/accordion';
+	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { listCourseModules, type CourseModuleItem } from '$lib/remote/canvas/modules.remote';
 
 	const courseId = page.params.courseId ?? '';
 	const modulesQuery = listCourseModules({ courseId });
 	const modules = $derived(modulesQuery.current ?? []);
+
+	let userOpenModules = $state<string[] | null>(null);
+	const openModules = $derived(userOpenModules ?? (modules.length > 0 ? [modules[0].id] : []));
 
 	const itemIcons: Record<string, IconSvgElement> = {
 		Assignment: AssignmentsIcon,
@@ -37,11 +41,11 @@
 <svelte:head><title>Modules | Guesso</title></svelte:head>
 
 <main class="h-full overflow-y-auto">
-	<div class="mx-auto w-full max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
+	<div class="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
 		{#if modulesQuery.loading && !modulesQuery.ready && modules.length === 0}
 			<div class="space-y-3" aria-hidden="true">
 				{#each [0, 1, 2, 3] as skeleton (skeleton)}
-					<div class="h-16 animate-pulse rounded-xl border bg-muted"></div>
+					<Skeleton class="h-[4.5rem] rounded-xl" />
 				{/each}
 			</div>
 			<p class="sr-only" role="status">Loading modules...</p>
@@ -56,98 +60,102 @@
 				</p>
 			{/if}
 
-			<div class="space-y-3">
-				{#each modules as module, index (module.id)}
-					{@const completedItems = module.items.filter((item) => item.completed === true).length}
-					{@const hasProgress = module.items.some((item) => item.completed !== null)}
-					<details open={index === 0} class="group rounded-xl border bg-card text-card-foreground">
-						<summary
-							class="flex cursor-pointer list-none items-center gap-3 rounded-xl px-4 py-4 transition-colors outline-none hover:bg-muted/60 focus-visible:ring-3 focus-visible:ring-ring/30 [&::-webkit-details-marker]:hidden"
+			<Accordion.Root
+				type="multiple"
+				value={openModules}
+				onValueChange={(value) => (userOpenModules = value)}
+				class="overflow-visible rounded-none border-0 bg-transparent"
+			>
+				{#each modules as module (module.id)}
+					<Accordion.Item
+						value={module.id}
+						class="border-b border-border/70 bg-transparent text-card-foreground first:border-t data-open:bg-transparent!"
+					>
+						<Accordion.Trigger
+							class="items-center gap-4 rounded-none border-0 px-0 py-5 text-left hover:text-chart-1 hover:no-underline focus-visible:ring-3 focus-visible:ring-ring/30"
 						>
 							<HugeiconsIcon
-								icon={ArrowDown01Icon}
+								icon={NotebookTabsIcon}
 								strokeWidth={2}
-								class="size-5 shrink-0 text-muted-foreground transition-transform group-open:rotate-180"
+								class="size-5 shrink-0 text-chart-1 transition-colors"
 							/>
-							<span class="min-w-0 flex-1">
-								<span class="block truncate font-semibold">{module.name}</span>
-								<span class="mt-1 block text-xs text-muted-foreground">
-									{#if module.locked}
-										Locked
-									{:else if hasProgress}
-										{completedItems} of {module.items.length} complete
-									{:else}
-										{module.itemsCount} {module.itemsCount === 1 ? 'item' : 'items'}
-									{/if}
-								</span>
+							<span class="min-w-0 flex-1 truncate text-base font-semibold sm:text-lg">
+								{module.name}
 							</span>
 							{#if module.locked}
-								<HugeiconsIcon
-									icon={LockKeyIcon}
-									strokeWidth={2}
-									class="size-4 shrink-0 text-muted-foreground"
-									aria-label="Locked"
-								/>
+								<span
+									class="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-muted-foreground"
+								>
+									<HugeiconsIcon icon={LockKeyIcon} strokeWidth={2} class="size-4" />
+									<span>Locked</span>
+								</span>
 							{/if}
-						</summary>
+						</Accordion.Trigger>
 
-						{#if module.locked}
-							<p class="border-t px-4 py-4 text-sm text-muted-foreground">
-								This module is locked in Canvas.
-							</p>
-						{:else if module.items.length === 0}
-							<p class="border-t px-4 py-4 text-sm text-muted-foreground">This module is empty.</p>
-						{:else}
-							<ul class="divide-y border-t">
-								{#each module.items as item (item.id)}
-									<li>
-										{#if item.href}
-											<a
-												href={item.href}
-												target="_blank"
-												rel="external noopener noreferrer"
-												class="flex items-center gap-3 px-4 py-3 pl-[calc(1rem+var(--item-indent)*1.25rem)] text-sm transition-colors outline-none hover:bg-muted/60 focus-visible:bg-muted/60 focus-visible:ring-3 focus-visible:ring-ring/30 focus-visible:ring-inset"
-												style={`--item-indent: ${item.indent}`}
-											>
-												<HugeiconsIcon
-													icon={getItemIcon(item)}
-													strokeWidth={2}
-													class="size-4 shrink-0 text-muted-foreground"
-												/>
-												<span class="min-w-0 flex-1 truncate">{item.title}</span>
-												<span class="hidden text-xs text-muted-foreground sm:inline"
-													>{item.type}</span
+						<Accordion.Content class="pb-0 [&_a]:no-underline">
+							{#if module.locked}
+								<p class="-mx-4 border-t border-border/70 px-4 py-4 text-sm text-muted-foreground">
+									This module is locked in Canvas.
+								</p>
+							{:else if module.items.length === 0}
+								<p class="-mx-4 border-t border-border/70 px-4 py-4 text-sm text-muted-foreground">
+									This module is empty.
+								</p>
+							{:else}
+								<ul class="-mx-4 divide-y border-t border-border/70">
+									{#each module.items as item (item.id)}
+										<li>
+											{#if item.href}
+												<a
+													href={item.href}
+													target="_blank"
+													rel="external noopener noreferrer"
+													class="group/item flex items-center gap-3 px-4 py-3 pl-[calc(1rem+var(--item-indent)*1.25rem)] text-sm text-foreground/85 transition-colors outline-none hover:text-chart-1 focus-visible:text-chart-1 focus-visible:ring-3 focus-visible:ring-ring/30 focus-visible:ring-inset"
+													style={`--item-indent: ${item.indent}`}
 												>
-												{#if item.completed === true}
 													<HugeiconsIcon
-														icon={CheckmarkCircle02Icon}
+														icon={getItemIcon(item)}
 														strokeWidth={2}
-														class="size-4 shrink-0 text-chart-2"
-														aria-label="Complete"
+														class="size-[1.125rem] shrink-0 text-muted-foreground transition-colors group-hover/item:text-chart-1"
 													/>
-												{/if}
-											</a>
-										{:else}
-											<div
-												class="flex items-center gap-3 px-4 py-3 pl-[calc(1rem+var(--item-indent)*1.25rem)] text-sm text-muted-foreground"
-												style={`--item-indent: ${item.indent}`}
-											>
-												<HugeiconsIcon
-													icon={getItemIcon(item)}
-													strokeWidth={2}
-													class="size-4 shrink-0"
-												/>
-												<span class="min-w-0 flex-1 truncate">{item.title}</span>
-												<span class="text-xs">{item.type}</span>
-											</div>
-										{/if}
-									</li>
-								{/each}
-							</ul>
-						{/if}
-					</details>
+													<span class="min-w-0 flex-1 truncate">{item.title}</span>
+													{#if item.completed === true}
+														<HugeiconsIcon
+															icon={CheckmarkCircle02Icon}
+															strokeWidth={2}
+															class="size-4 shrink-0 text-green-600 dark:text-green-500"
+															aria-label="Complete"
+														/>
+													{/if}
+												</a>
+											{:else}
+												<div
+													class="flex items-center gap-3 px-4 py-3 pl-[calc(1rem+var(--item-indent)*1.25rem)] text-sm text-muted-foreground"
+													style={`--item-indent: ${item.indent}`}
+												>
+													{#if item.type === 'SubHeader'}
+														<span
+															class="min-w-0 flex-1 truncate text-xs font-semibold tracking-wide text-foreground/70 uppercase"
+															>{item.title}</span
+														>
+													{:else}
+														<HugeiconsIcon
+															icon={getItemIcon(item)}
+															strokeWidth={2}
+															class="size-[1.125rem] shrink-0"
+														/>
+														<span class="min-w-0 flex-1 truncate">{item.title}</span>
+													{/if}
+												</div>
+											{/if}
+										</li>
+									{/each}
+								</ul>
+							{/if}
+						</Accordion.Content>
+					</Accordion.Item>
 				{/each}
-			</div>
+			</Accordion.Root>
 		{/if}
 	</div>
 </main>

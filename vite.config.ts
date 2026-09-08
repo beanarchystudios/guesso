@@ -3,11 +3,14 @@ import adapter from '@sveltejs/adapter-vercel';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
-export default defineConfig({
-	ssr: {
-		// Keep the CommonJS sanitizer and parser inside Vercel's function bundle.
-		noExternal: ['sanitize-html', 'htmlparser2']
-	},
+export default defineConfig(({ command }) => ({
+	ssr:
+		command === 'build'
+			? {
+					// Keep the CommonJS sanitizer and parser inside Vercel's function bundle.
+					noExternal: ['sanitize-html', 'htmlparser2']
+				}
+			: undefined,
 	plugins: [
 		tailwindcss(),
 		sveltekit({
@@ -29,4 +32,4 @@ export default defineConfig({
 			})
 		})
 	]
-});
+}));
