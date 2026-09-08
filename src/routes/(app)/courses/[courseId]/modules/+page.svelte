@@ -14,7 +14,6 @@
 	} from '@hugeicons/core-free-icons';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import { Badge } from '$lib/components/ui/badge';
-	import { Progress } from '$lib/components/ui/progress';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { listCourseModules, type CourseModuleItem } from '$lib/remote/canvas/modules.remote';
 
@@ -38,12 +37,6 @@
 	function getItemIcon(item: CourseModuleItem) {
 		return itemIcons[item.type] ?? NotebookTabsIcon;
 	}
-
-	const itemTypeLabels: Record<string, string> = {
-		ExternalUrl: 'Link',
-		ExternalTool: 'Tool',
-		SubHeader: 'Section'
-	};
 </script>
 
 <svelte:head><title>Modules | Guesso</title></svelte:head>
@@ -95,17 +88,11 @@
 									{/if}
 								</span>
 								{#if !module.locked}
-									<span class="mt-1.5 flex items-center gap-2 text-xs text-muted-foreground">
+									<span class="mt-1 block text-xs text-muted-foreground">
 										{#if hasProgress}
-											<Progress
-												value={completedItems}
-												max={module.items.length}
-												class="h-1.5 w-24 shrink-0"
-												aria-label="Module progress"
-											/>
-											<span>{completedItems} of {module.items.length} complete</span>
+											{completedItems} of {module.items.length} complete
 										{:else}
-											<span>{module.itemsCount} {module.itemsCount === 1 ? 'item' : 'items'}</span>
+											{module.itemsCount} {module.itemsCount === 1 ? 'item' : 'items'}
 										{/if}
 									</span>
 								{/if}
@@ -143,12 +130,6 @@
 														/>
 													</span>
 													<span class="min-w-0 flex-1 truncate">{item.title}</span>
-													<Badge
-														variant="secondary"
-														class="hidden text-muted-foreground sm:inline-flex"
-													>
-														{itemTypeLabels[item.type] ?? item.type}
-													</Badge>
 													{#if item.completed === true}
 														<HugeiconsIcon
 															icon={CheckmarkCircle02Icon}
@@ -179,12 +160,6 @@
 															/>
 														</span>
 														<span class="min-w-0 flex-1 truncate">{item.title}</span>
-														<Badge
-															variant="secondary"
-															class="hidden text-muted-foreground sm:inline-flex"
-														>
-															{itemTypeLabels[item.type] ?? item.type}
-														</Badge>
 													{/if}
 												</div>
 											{/if}
