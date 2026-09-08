@@ -1,6 +1,29 @@
 #!/bin/sh
 set -eu
 
-project_root=${PWD%/.delta/worktrees/*}
-cp "$project_root/.env" .env
+# Copy .env from the primary checkout unless the worktree already has one.
+# Candidates, in order:
+# 1. GUESSO_ENV_FILE, if set, points directly at an .env file.
+# 2. Worktree nested inside the checkout (<checkout>/.delta/worktrees/...).
+# 3. Known checkout locations on contributors' machines.
+env_file=""
+if [ -f .env ]; then
+	: # keep the existing worktree .env
+elif [ -n "${GUESSO_ENV_FILE:-}" ]; then
+	env_file=$GUESSO_ENV_FILE
+else
+	case $PWD in
+	*/.delta/worktrees/*) env_file="${PWD%/.delta/worktrees/*}/.env" ;;
+	esac
+	if [ ! -f "$env_file" ] && [ -f "$HOME/Work/sv/guesso/.env" ]; then
+		env_file="$HOME/Work/sv/guesso/.env"
+	fi
+fi
+
+if [ -f "$env_file" ]; then
+	cp "$env_file" .env
+elif [ ! -f .env ]; then
+	echo "prepare: no .env found; set GUESSO_ENV_FILE or create one from .env.example" >&2
+fi
+
 bun install
