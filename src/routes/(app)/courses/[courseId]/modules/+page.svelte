@@ -13,7 +13,6 @@
 		Quiz01Icon
 	} from '@hugeicons/core-free-icons';
 	import * as Accordion from '$lib/components/ui/accordion';
-	import { Badge } from '$lib/components/ui/badge';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { listCourseModules, type CourseModuleItem } from '$lib/remote/canvas/modules.remote';
 
@@ -42,7 +41,7 @@
 <svelte:head><title>Modules | Guesso</title></svelte:head>
 
 <main class="h-full overflow-y-auto">
-	<div class="mx-auto w-full max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
+	<div class="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
 		{#if modulesQuery.loading && !modulesQuery.ready && modules.length === 0}
 			<div class="space-y-3" aria-hidden="true">
 				{#each [0, 1, 2, 3] as skeleton (skeleton)}
@@ -61,55 +60,48 @@
 				</p>
 			{/if}
 
+			<h1 class="mb-8 text-2xl font-semibold tracking-tight">Modules</h1>
+
 			<Accordion.Root
 				type="multiple"
 				value={openModules}
 				onValueChange={(value) => (userOpenModules = value)}
-				class="space-y-3 overflow-visible rounded-none border-none"
+				class="overflow-visible border-y border-border/70"
 			>
 				{#each modules as module (module.id)}
-					{@const completedItems = module.items.filter((item) => item.completed === true).length}
-					{@const hasProgress = module.items.some((item) => item.completed !== null)}
-					<Accordion.Item
-						value={module.id}
-						class="rounded-xl border bg-card text-card-foreground shadow-xs not-last:border-b data-open:bg-card"
-					>
+					<Accordion.Item value={module.id} class="text-card-foreground data-open:bg-transparent!">
 						<Accordion.Trigger
-							class="items-center gap-3 rounded-xl border-0 px-4 py-4 hover:no-underline focus-visible:ring-3 focus-visible:ring-ring/30"
+							class="items-center gap-4 rounded-none border-0 px-0 py-5 text-left hover:text-primary hover:no-underline focus-visible:ring-3 focus-visible:ring-ring/30"
 						>
-							<span class="min-w-0 flex-1">
-								<span class="flex min-w-0 items-center gap-2">
-									<span class="truncate text-sm font-semibold sm:text-base">{module.name}</span>
-									{#if module.locked}
-										<Badge variant="outline" class="shrink-0 text-muted-foreground">
-											<HugeiconsIcon icon={LockKeyIcon} strokeWidth={2} data-icon="inline-start" />
-											Locked
-										</Badge>
-									{/if}
-								</span>
-								{#if !module.locked}
-									<span class="mt-1 block text-xs text-muted-foreground">
-										{#if hasProgress}
-											{completedItems} of {module.items.length} complete
-										{:else}
-											{module.itemsCount} {module.itemsCount === 1 ? 'item' : 'items'}
-										{/if}
-									</span>
-								{/if}
+							<HugeiconsIcon
+								icon={NotebookTabsIcon}
+								strokeWidth={2}
+								class="size-5 shrink-0 text-primary transition-colors"
+							/>
+							<span class="min-w-0 flex-1 truncate text-base font-semibold sm:text-lg">
+								{module.name}
 							</span>
+							{#if module.locked}
+								<span
+									class="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-muted-foreground"
+								>
+									<HugeiconsIcon icon={LockKeyIcon} strokeWidth={2} class="size-4" />
+									<span>Locked</span>
+								</span>
+							{/if}
 						</Accordion.Trigger>
 
 						<Accordion.Content class="pb-0 [&_a]:no-underline">
 							{#if module.locked}
-								<p class="-mx-4 border-t px-4 py-4 text-sm text-muted-foreground">
+								<p class="-mx-4 border-t border-border/70 px-4 py-4 text-sm text-muted-foreground">
 									This module is locked in Canvas.
 								</p>
 							{:else if module.items.length === 0}
-								<p class="-mx-4 border-t px-4 py-4 text-sm text-muted-foreground">
+								<p class="-mx-4 border-t border-border/70 px-4 py-4 text-sm text-muted-foreground">
 									This module is empty.
 								</p>
 							{:else}
-								<ul class="-mx-4 divide-y border-t">
+								<ul class="-mx-4 divide-y border-t border-border/70">
 									{#each module.items as item (item.id)}
 										<li>
 											{#if item.href}
@@ -117,18 +109,14 @@
 													href={item.href}
 													target="_blank"
 													rel="external noopener noreferrer"
-													class="group flex items-center gap-3 px-4 py-2.5 pl-[calc(1rem+var(--item-indent)*1.25rem)] text-sm transition-colors outline-none hover:bg-muted/60 focus-visible:bg-muted/60 focus-visible:ring-3 focus-visible:ring-ring/30 focus-visible:ring-inset"
+													class="group/item flex items-center gap-3 px-4 py-3 pl-[calc(1rem+var(--item-indent)*1.25rem)] text-sm text-foreground/85 transition-colors outline-none hover:text-primary focus-visible:text-primary focus-visible:ring-3 focus-visible:ring-ring/30 focus-visible:ring-inset"
 													style={`--item-indent: ${item.indent}`}
 												>
-													<span
-														class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-colors group-hover:bg-background"
-													>
-														<HugeiconsIcon
-															icon={getItemIcon(item)}
-															strokeWidth={2}
-															class="size-4"
-														/>
-													</span>
+													<HugeiconsIcon
+														icon={getItemIcon(item)}
+														strokeWidth={2}
+														class="size-[1.125rem] shrink-0 text-muted-foreground transition-colors group-hover/item:text-primary"
+													/>
 													<span class="min-w-0 flex-1 truncate">{item.title}</span>
 													{#if item.completed === true}
 														<HugeiconsIcon
@@ -141,7 +129,7 @@
 												</a>
 											{:else}
 												<div
-													class="flex items-center gap-3 px-4 py-2.5 pl-[calc(1rem+var(--item-indent)*1.25rem)] text-sm text-muted-foreground"
+													class="flex items-center gap-3 px-4 py-3 pl-[calc(1rem+var(--item-indent)*1.25rem)] text-sm text-muted-foreground"
 													style={`--item-indent: ${item.indent}`}
 												>
 													{#if item.type === 'SubHeader'}
@@ -150,15 +138,11 @@
 															>{item.title}</span
 														>
 													{:else}
-														<span
-															class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted"
-														>
-															<HugeiconsIcon
-																icon={getItemIcon(item)}
-																strokeWidth={2}
-																class="size-4"
-															/>
-														</span>
+														<HugeiconsIcon
+															icon={getItemIcon(item)}
+															strokeWidth={2}
+															class="size-[1.125rem] shrink-0"
+														/>
 														<span class="min-w-0 flex-1 truncate">{item.title}</span>
 													{/if}
 												</div>
